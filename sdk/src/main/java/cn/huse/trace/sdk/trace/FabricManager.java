@@ -41,6 +41,10 @@ public class FabricManager {
         return instance;
     }
 
+    public static FabricManager getInstance() {
+        return instance;
+    }
+
     private FabricManager()
             throws CryptoException, InvalidArgumentException, NoSuchAlgorithmException, NoSuchProviderException, InvalidKeySpecException, TransactionException, IOException {
         manager = new ChaincodeManager("Admin", getConfig());
