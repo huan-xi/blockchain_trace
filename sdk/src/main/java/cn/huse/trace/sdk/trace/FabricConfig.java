@@ -39,9 +39,12 @@ public class FabricConfig {
 	 * @return D:/installSoft/apache-tomcat-9.0.0.M21-02/webapps/xxx/WEB-INF/classes/fabric/channel-artifacts/
 	 */
 	private String getChannlePath() {
-		String directorys = Objects.requireNonNull(FabricConfig.class.getClassLoader().getResource("fabric")).getPath();
+		/*String directorys = Objects.requireNonNull(FabricConfig.class.getClassLoader().getResource("fabric")).getFile();
+		log.debug("directorys = " + directorys);
 		File directory = new File(directorys);
-		return directory.getPath();
+		log.debug("directory = " + directory.getPath());*/
+		return "classpath:fabric/";
+		// return "src/main/resources/fabric/channel-artifacts/";
 	}
 
 	public Peers getPeers() {
