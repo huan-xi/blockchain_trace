@@ -5,7 +5,6 @@ package cn.huse.trace.sdk.trace;
  * @date: 2019/3/7 15:37
  */
 
-import java.io.File;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -123,13 +122,13 @@ public class FabricManager {
      * @return /WEB-INF/classes/fabric/channel-artifacts/
      */
     private String getChannleArtifactsPath() {
-        return getDirectory().getPath() + "/channel-artifacts/";
+        return getDirectory() + "/channel-artifacts/";
     }
 
-    private File getDirectory() {
-        String directorys = FabricManager.class.getClassLoader().getResource("fabric").getFile();
-        File directory = new File(directorys);
-        return directory;
+    private String getDirectory() {
+       /* String directorys = FabricManager.class.getClassLoader().getResource("fabric").getFile();
+        File directory = new File(directorys);*/
+        return FabricManager.class.getClassLoader().getResource("fabric").getPath().substring(1);
     }
 
     /**
@@ -138,7 +137,7 @@ public class FabricManager {
      * @return /WEB-INF/classes/fabric/crypto-config/
      */
     private String getCryptoConfigPath() {
-        return getDirectory().getPath() + "/crypto-config/";
+        return getDirectory() + "/crypto-config/";
     }
 
 }
