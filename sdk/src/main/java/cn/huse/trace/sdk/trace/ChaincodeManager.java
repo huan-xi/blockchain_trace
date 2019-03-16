@@ -49,29 +49,38 @@ import org.slf4j.LoggerFactory;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 
 @Component
 public class ChaincodeManager {
-
     private static Logger log = LoggerFactory.getLogger(ChaincodeManager.class);
-
-    private FabricConfig config;
+    private FabricConfig config=new FabricConfig();
     private Orderers orderers;
     private Peers peers;
     private Chaincode chaincode;
-
     private HFClient client;
     private FabricOrg fabricOrg;
     private Channel channel;
     private ChaincodeID chaincodeID;
+    @Value("${fabric.path}")
+    private String path;
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
 
     @PostConstruct
     public void init() {
         try {
-            FabricManager.obtain();
+            config.setDirectory(path);
+            FabricManager.obtain(config);
         } catch (CryptoException | InvalidArgumentException | NoSuchAlgorithmException | NoSuchProviderException | InvalidKeySpecException | TransactionException | IOException e) {
             e.printStackTrace();
             log.error("obtain fabricManager failed."+e.getMessage());
@@ -451,4 +460,7 @@ public class ChaincodeManager {
         return ret;*/
     }
 
+    public FabricConfig getConfig() {
+        return config;
+    }
 }

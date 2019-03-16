@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
-
 import cn.huse.trace.sdk.trace.bean.Chaincode;
 import cn.huse.trace.sdk.trace.bean.Orderers;
 import cn.huse.trace.sdk.trace.bean.Peers;
@@ -23,17 +22,19 @@ public class FabricManager {
 
     private static final String CHAINCODE_NAME = "cc";
     private static final String CHANNEL_NAME = "tracechannel";
+    private final FabricConfig config;
     private ChaincodeManager manager;
 
     private static FabricManager instance = null;
     private static Logger log = LoggerFactory.getLogger(FabricManager.class);
+    private String directory;
 
-    public static FabricManager obtain()
+    public static FabricManager obtain(FabricConfig config)
             throws CryptoException, InvalidArgumentException, NoSuchAlgorithmException, NoSuchProviderException, InvalidKeySpecException, TransactionException, IOException {
         if (null == instance) {
             synchronized (FabricManager.class) {
                 if (null == instance) {
-                    instance = new FabricManager();
+                    instance = new FabricManager(config);
                 }
             }
         }
@@ -44,8 +45,9 @@ public class FabricManager {
         return instance;
     }
 
-    private FabricManager()
+    private FabricManager(FabricConfig config)
             throws CryptoException, InvalidArgumentException, NoSuchAlgorithmException, NoSuchProviderException, InvalidKeySpecException, TransactionException, IOException {
+        this.config=config;
         manager = new ChaincodeManager("Admin", getConfig());
     }
 
@@ -69,7 +71,7 @@ public class FabricManager {
         FabricConfig config = new FabricConfig();
         config.setOrderers(getOrderers());
         config.setPeers(getPeers());
-        config.setChaincode(getChaincode(CHANNEL_NAME, CHAINCODE_NAME, "github.com/chaincode/chaincode_example02/go/", "1.0"));
+        config.setChaincode(getChaincode(CHANNEL_NAME,CHAINCODE_NAME , "github.com/chaincode/chaincode_example02/go/", "1.0"));
         config.setChannelArtifactsPath(getChannleArtifactsPath());
         config.setCryptoConfigPath(getCryptoConfigPath());
         return config;
@@ -126,12 +128,7 @@ public class FabricManager {
     }
 
     private String getDirectory() {
-       /* String directorys = FabricManager.class.getClassLoader().getResource("fabric").getFile();
-        File directory = new File(directorys);*/
-        String path = FabricManager.class.getClassLoader().getResource("fabric").getPath();
-        String os = System.getProperty("os.name");
-        if (os.toLowerCase().startsWith("win")) path = path.substring(1);
-        return path;
+        return config.getDirectory();
     }
 
     /**

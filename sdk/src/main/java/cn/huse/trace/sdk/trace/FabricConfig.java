@@ -25,6 +25,7 @@ public class FabricConfig {
 	private String cryptoConfigPath;
 	private boolean openCATLS=true;
 	private boolean registerEvent = false;
+	private String directory;
 
 	public FabricConfig() {
 		// 默认channel-artifacts所在路径 /xxx/WEB-INF/classes/fabric/channel-artifacts/
@@ -113,4 +114,11 @@ public class FabricConfig {
 		this.registerEvent = registerEvent;
 	}
 
+	public String getDirectory() {
+		return this.directory;
+	}
+
+	public void setDirectory(String directory) {
+		this.directory = directory;
+	}
 }

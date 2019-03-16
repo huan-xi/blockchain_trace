@@ -31,12 +31,6 @@ public class Test {
 
     @org.junit.Test
     public void test() throws InvalidArgumentException, NoSuchAlgorithmException, IOException, TransactionException, NoSuchProviderException, CryptoException, InvalidKeySpecException, ProposalException {
-        ChaincodeManager fabricManager = FabricManager.obtain().getManager();
-        try {
-            fabricManager.queryBlockByHash(Hex.decodeHex(fabricManager.queryBlockByNumber(3).getPreviousHash()));
-        } catch (DecoderException e) {
-            e.printStackTrace();
-        }
 //        fabricManager.invoke()
 //        byte[] b = fabricManager.getChannelInstant().queryBlockchainInfo().getCurrentBlockHash();
 //        System.out.println(new String(b,"UTF-8"));
