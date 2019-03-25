@@ -98,10 +98,10 @@ public class FabricOrg {
             addEventHubLocation(peers.get().get(i).getPeerEventHubName(), peers.get().get(i).getPeerEventHubLocation());
             setCALocation(peers.get().get(i).getCaLocation());
             if (openCATLS) {
-//				File caCert = Paths.get(cryptoConfigPath, "peerOrganizations", peers.getOrgDomainName(), String.format("/ca/ca.%s-cert.pem", peers.getOrgDomainName())).toFile();
-                File caCert = new File(cryptoConfigPath + "peerOrganizations/" + peers.getOrgDomainName() + String.format("/ca/ca.%s-cert.pem", peers.getOrgDomainName()));
+//				File caCert = Paths.get(cryptoConfigPath, "/peerOrganizations/", peers.getOrgDomainName(), String.format("/ca/ca.%s-cert.pem", peers.getOrgDomainName())).toFile();
+                File caCert = new File(cryptoConfigPath + "/peerOrganizations/" + peers.getOrgDomainName() + String.format("/ca/ca.%s-cert.pem", peers.getOrgDomainName()));
                 if (!caCert.exists() || !caCert.isFile()) {
-                    throw new RuntimeException("TEST is missing cert file " + caCert.getPath());
+                    throw new RuntimeException("TEST is missing cert file " + caCert.getAbsolutePath());
                 }
                 Properties properties = new Properties();
                 properties.setProperty("pemFile", caCert.getAbsolutePath());
