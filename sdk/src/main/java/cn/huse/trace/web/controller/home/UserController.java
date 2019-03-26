@@ -9,17 +9,23 @@ import cn.huse.trace.web.common.ReturnMessage;
 import cn.huse.trace.web.common.Utils;
 import cn.huse.trace.web.controller.LoginCache;
 import cn.huse.trace.web.mapper.UserMapper;
+import cn.huse.trace.web.pojo.User;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+
+import java.io.*;
 import java.util.Date;
 import javax.annotation.Resource;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @Api(
@@ -30,6 +36,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
     @Resource
     UserMapper userMapper;
+    @Value("${upload.path}")
+    String uploadPath;
 
     public UserController() {
     }
@@ -88,10 +96,31 @@ public class UserController {
 
     @PostMapping({"/header"})
     @ApiOperation("修改用户头像")
-    public ReturnMessage updateUserHeader(@RequestHeader("token") String token, String header) {
+    public ReturnMessage updateUserHeader(@RequestHeader("token") String token, MultipartFile image) {
         User user = LoginCache.getUser(token);
+        if (image != null && image.isEmpty()) return new ReturnMessage(0, "image is empty");
+        File file = new File(uploadPath + Utils.getUUID() + "." + image.getContentType().split("/")[1]);
+        OutputStream os = null;
+        InputStream in = null;
+        try {
+            os = new FileOutputStream(file);
+            in = image.getInputStream();
+            int i;//从输入流读取一定数量的字节，返回 0 到 255 范围内的 int 型字节值
+            while ((i = in.read()) != -1) {
+                os.write(i);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                in.close();
+                os.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         if (user != null) {
-            user.setHeaderSrc(header);
+            user.setHeaderSrc(file.getName());
             if (this.userMapper.updateByPrimaryKey(user) > 0) {
                 return new ReturnMessage(1, "update success");
             }

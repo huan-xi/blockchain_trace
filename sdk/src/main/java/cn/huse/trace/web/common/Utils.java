@@ -16,4 +16,7 @@ public class Utils {
     public static String generateToken() {
         return DigestUtils.md5Hex("imp" + System.currentTimeMillis() + Math.random());
     }
+    public static String getUUID() {
+        return DigestUtils.md5Hex("imp" + System.currentTimeMillis() + Math.random());
+    }
 }

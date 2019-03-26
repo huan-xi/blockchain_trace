@@ -5,6 +5,8 @@
 
 package cn.huse.trace.web.controller;
 
+import cn.huse.trace.web.pojo.User;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,7 +21,7 @@ public class LoginCache {
     }
 
     public static User getUser(String token) {
-        return (User)login.get(token);
+        return (User) login.get(token);
     }
 
     public static void remote(String token) {

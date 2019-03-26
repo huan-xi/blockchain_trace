@@ -8,6 +8,7 @@ package cn.huse.trace.web.controller.home;
 import cn.huse.trace.web.common.PageResult;
 import cn.huse.trace.web.common.ReturnMessage;
 import cn.huse.trace.web.mapper.ProMapper;
+import cn.huse.trace.web.pojo.Pro;
 import cn.huse.trace.web.pojo.ProExample;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
