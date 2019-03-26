@@ -1,4 +1,4 @@
-package cn.huse.trace.web.controller;
+package cn.huse.trace.web.controller.blocknet;
 
 import cn.huse.trace.sdk.trace.ChaincodeManager;
 import cn.huse.trace.sdk.trace.FabricManager;
@@ -25,6 +25,12 @@ import java.io.IOException;
 @Api(value = "区块信息", description = "区块信息查询接口")
 public class BlockController {
     ChaincodeManager fabricManager;
+
+    @GetMapping("/blocks")
+    @ApiOperation("获取区块")
+    public void getBlocks() {
+
+    }
 
     @GetMapping("/query/hash")
     @ApiOperation("根据Hash值获取区块信息")

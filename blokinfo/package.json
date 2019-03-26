@@ -10,8 +10,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "iview": "^3.3.3",
-    "vue": "^2.6.6",
-    "Axios": "latest"
+    "vue": "^2.6.6"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.5.0",

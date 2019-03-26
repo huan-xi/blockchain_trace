@@ -1,4 +1,4 @@
-package cn.huse.trace.web.controller;
+package cn.huse.trace.web.controller.blocknet;
 
 import cn.huse.trace.sdk.trace.ChaincodeManager;
 import cn.huse.trace.sdk.trace.FabricManager;
