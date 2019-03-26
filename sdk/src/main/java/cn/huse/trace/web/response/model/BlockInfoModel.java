@@ -1,5 +1,6 @@
 package cn.huse.trace.web.response.model;
 
+import com.alibaba.fastjson.JSON;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.codec.binary.Hex;
@@ -20,6 +21,8 @@ public class BlockInfoModel {
     private String dataHash;
     @ApiModelProperty("前一区块Hash")
     private String previousHash;
+    @ApiModelProperty("大小")
+    private int size;
     @ApiModelProperty("封装信息")
     private List<EnvelopeModel> envelopes = new ArrayList();
 
@@ -31,9 +34,18 @@ public class BlockInfoModel {
         blockInfo.getEnvelopeInfos().forEach(envelopeInfo -> {
             envelopes.add(new EnvelopeModel(envelopeInfo));
         });
+        this.size = JSON.toJSONString(this).getBytes().length*1024;
     }
 
     public BlockInfoModel() {
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
     }
 
     public List<EnvelopeModel> getEnvelopes() {

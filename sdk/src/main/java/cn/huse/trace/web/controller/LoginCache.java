@@ -5,6 +5,8 @@
 
 package cn.huse.trace.web.controller;
 
+import cn.huse.trace.web.pojo.User;
+
 import java.util.HashMap;
 import java.util.Map;
 

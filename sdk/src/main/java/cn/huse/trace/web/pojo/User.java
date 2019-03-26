@@ -1,12 +1,14 @@
 package cn.huse.trace.web.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.Date;
 
 public class User {
     private String account;
-
+    @JsonIgnore
     private String passwd;
-
+    @JsonIgnore
     private Date createdTime;
 
     private String name;

@@ -9,17 +9,15 @@ import cn.huse.trace.web.common.ReturnMessage;
 import cn.huse.trace.web.common.Utils;
 import cn.huse.trace.web.controller.LoginCache;
 import cn.huse.trace.web.mapper.UserMapper;
+import cn.huse.trace.web.pojo.User;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import java.util.Date;
-import javax.annotation.Resource;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import java.util.Date;
 
 @RestController
 @Api(
