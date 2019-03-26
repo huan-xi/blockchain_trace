@@ -4,7 +4,7 @@
             <Table border :columns="columns" :data="data">
                 <div slot="header" class="table-header">最新出块</div>
                 <div slot="footer" class="table-footer">
-                    <Page :total="count"/>
+                    <Page :total="count" @on-change="pageChange"/>
                 </div>
             </Table>
         </div>
@@ -38,65 +38,63 @@
         name: "Index",
         data() {
             return {
+                page: 1,
+                size: 10,
                 columns: [
                     {
                         title: '高度',
-                        key: '',
+                        key: 'blockNumber',
                         width: '100'
                     },
                     {
-                        title: '大小',
-                        key: 'age'
+                        title: '大小(b)',
+                        key: 'size',
+                        width: '100'
                     },
                     {
                         title: '播报方',
-                        key: 'address'
+                        key: 'creator',
+                        width: '150'
                     },
                     {
                         title: '时间',
-                        key: 'address'
+                        key: 'timestamp',
+                        width: '200'
                     },
                     {
                         title: '数据hash',
-                        key: 'address'
+                        key: 'dataHash'
                     }
                 ],
-                data: [
-                    {
-                        name: '',
-                        age: 18,
-                        address: 'New York No. 1 Lake Park',
-                        date: '2016-10-03'
-                    },
-                    {
-                        name: 'Jim Green',
-                        age: 24,
-                        address: 'London No. 1 Lake Park',
-                        date: '2016-10-01'
-                    },
-                    {
-                        name: 'Joe Black',
-                        age: 30,
-                        address: 'Sydney No. 1 Lake Park',
-                        date: '2016-10-02'
-                    },
-                    {
-                        name: 'Jon Snow',
-                        age: 26,
-                        address: 'Ottawa No. 2 Lake Park',
-                        date: '2016-10-04'
-                    }
-                ],
+                data: [],
                 count: 0
             }
         },
+
         created() {
             axios.get('/api/blockchain/info').then(e => {
-                console.log(e.data)
                 this.count = e.data.height
             })
+            this.refresh()
         },
-        methods: {}
+        methods: {
+            refresh() {
+                axios.get(`/api/block/blocks?page=${this.page}&size=${this.size}`).then(e => {
+                    console.log(e.data)
+                    let data = e.data.msg.rows
+                    for (let i = 0; i < data.length; i++) {
+                        data[i].creator = data[i].envelopes[0].creator.mspid
+                        data[i].timestamp = data[i].envelopes[0].timestamp
+                    }
+                    this.data = data
+                    console.log(this.data)
+                })
+            },
+            pageChange(e) {
+                this.page = e
+                this.refresh()
+            }
+        }
     }
 </script>
 

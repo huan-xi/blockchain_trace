@@ -15,10 +15,11 @@ import com.github.pagehelper.PageHelper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import javax.annotation.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
 
 @RestController
 @Api(
@@ -36,7 +37,7 @@ public class ProController {
     @GetMapping({"/milks"})
     @ApiOperation("获取奶粉信息(每次不能超过20条)")
     public ReturnMessage getMilks(@ApiParam("页数") int page, @ApiParam("每页大小") int size) {
-        if (page * size > 20) {
+        if ( size > 20) {
             return new ReturnMessage(3000, "once fetch to many infos");
         } else {
             PageHelper.startPage(page, size);

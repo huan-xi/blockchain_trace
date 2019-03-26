@@ -83,7 +83,7 @@
     </if>
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select
+    select 
     <include refid="Base_Column_List" />
     from pro
     where id = #{id,jdbcType=INTEGER}
@@ -99,9 +99,9 @@
     </if>
   </delete>
   <insert id="insert" parameterType="cn.huse.trace.web.pojo.Pro">
-    insert into pro (id, pro_url, pro_info,
+    insert into pro (id, pro_url, pro_info, 
       img_url)
-    values (#{id,jdbcType=INTEGER}, #{proUrl,jdbcType=VARCHAR}, #{proInfo,jdbcType=VARCHAR},
+    values (#{id,jdbcType=INTEGER}, #{proUrl,jdbcType=VARCHAR}, #{proInfo,jdbcType=VARCHAR}, 
       #{imgUrl,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="cn.huse.trace.web.pojo.Pro">
