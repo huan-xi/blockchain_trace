@@ -122,7 +122,7 @@ public class UserController {
         if (user != null) {
             user.setHeaderSrc(file.getName());
             if (this.userMapper.updateByPrimaryKey(user) > 0) {
-                return new ReturnMessage(1, "update success");
+                return new ReturnMessage(1, user);
             }
         }
 

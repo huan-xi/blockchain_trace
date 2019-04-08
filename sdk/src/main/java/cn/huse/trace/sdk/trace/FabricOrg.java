@@ -93,6 +93,7 @@ public class FabricOrg {
             throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeySpecException, IOException {
         this.name = peers.getOrgName();
         this.mspid = peers.getOrgMSPID();
+        openCATLS=true;
         for (int i = 0; i < peers.get().size(); i++) {
             addPeerLocation(peers.get().get(i).getPeerName(), peers.get().get(i).getPeerLocation());
             addEventHubLocation(peers.get().get(i).getPeerEventHubName(), peers.get().get(i).getPeerEventHubLocation());
@@ -115,10 +116,6 @@ public class FabricOrg {
         }
         setDomainName(peers.getOrgDomainName()); // domainName=tk.anti-moth.com
 
-        // Set up HFCA for Org1
-//		setCAClient(HFCAClient.createNewInstance(getCALocation(), getCAProperties()));
-
-        // setAdmin(fabricStore.getMember("admin", peers.getOrgName())); // 设置该组织的管理员
 
         File skFile = Paths.get(cryptoConfigPath, "/peerOrganizations/", peers.getOrgDomainName(), String.format("/users/%s@%s/msp/keystore", username, peers.getOrgDomainName())).toFile();
         File certificateFile = Paths.get(cryptoConfigPath, "/peerOrganizations/", peers.getOrgDomainName(),

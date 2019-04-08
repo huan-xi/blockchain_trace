@@ -2,6 +2,7 @@ package cn.huse.trace;
 
 
 import cn.huse.trace.sdk.trace.ChaincodeManager;
+import cn.huse.trace.sdk.trace.FabricConfig;
 import cn.huse.trace.sdk.trace.FabricManager;
 import com.google.protobuf.ByteString;
 import org.apache.commons.codec.DecoderException;
@@ -31,7 +32,11 @@ public class Test {
 
     @org.junit.Test
     public void test() throws InvalidArgumentException, NoSuchAlgorithmException, IOException, TransactionException, NoSuchProviderException, CryptoException, InvalidKeySpecException, ProposalException {
-//        fabricManager.invoke()
+         FabricConfig config=new FabricConfig();
+        config.setDirectory("C:\\Users\\huanxi\\Desktop\\trace\\sdk\\src\\main\\resources\\fabric");
+        ChaincodeManager fabricManager = FabricManager.obtain(config).getManager();
+        fabricManager.query("query", new String[]{"a"});
+//        fabricManager.invoke();
 //        byte[] b = fabricManager.getChannelInstant().queryBlockchainInfo().getCurrentBlockHash();
 //        System.out.println(new String(b,"UTF-8"));
 //        BlockInfo f = fabricManager.queryBlockByNumber(10);

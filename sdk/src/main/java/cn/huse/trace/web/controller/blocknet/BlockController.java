@@ -24,9 +24,9 @@ import java.util.List;
  * @author: huanxi
  * @date: 2019/3/15 12:26
  */
-@RestController
-@RequestMapping("/block")
-@Api(value = "区块信息", description = "区块信息查询接口")
+//@RestController
+//@RequestMapping("/block")
+//@Api(value = "区块信息", description = "区块信息查询接口")
 public class BlockController {
     ChaincodeManager fabricManager;
 

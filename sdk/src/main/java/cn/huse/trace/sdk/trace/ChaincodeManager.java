@@ -54,7 +54,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 
-@Component
+//@Component
 public class ChaincodeManager {
     private static Logger log = LoggerFactory.getLogger(ChaincodeManager.class);
     private FabricConfig config=new FabricConfig();

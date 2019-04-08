@@ -5,7 +5,8 @@ package cn.huse.trace.sdk.trace;
  * @date: 2019/3/7 15:54
  */
 public class Location {
-    private final static String IP = "111.230.251.119";
+//    private final static String IP = "111.230.251.119";
+    private final static String IP = "47.107.102.147";
     private static String OrdererLocation = getLocation(7050);
     private static String Peer0Location = getLocation(7051);
     private static String peerEventHubLocation = getLocation(7053);

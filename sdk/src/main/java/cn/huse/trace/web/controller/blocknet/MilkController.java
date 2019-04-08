@@ -18,9 +18,9 @@ import java.util.Map;
  * @author: huanxi
  * @date: 2019/3/15 14:12
  */
-@RestController
-@Api(value = "奶粉操作", description = "对奶粉初始化，加工，检测")
-@RequestMapping("/milk")
+//@RestController
+//@Api(value = "奶粉操作", description = "对奶粉初始化，加工，检测")
+//@RequestMapping("/milk")
 public class MilkController {
     ChaincodeManager fabricManager;
 

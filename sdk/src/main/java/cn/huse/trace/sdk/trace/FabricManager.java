@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 
 public class FabricManager {
 
-    private static final String CHAINCODE_NAME = "cc";
+    private static final String CHAINCODE_NAME = "mycc";
     private static final String CHANNEL_NAME = "tracechannel";
     private final FabricConfig config;
     private ChaincodeManager manager;

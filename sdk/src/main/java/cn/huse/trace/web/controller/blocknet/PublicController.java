@@ -15,9 +15,9 @@ import java.util.Map;
  * @author: huanxi
  * @date: 2019/3/15 23:26
  */
-@RestController
-@Api(value = "公开接口", description = "公开接口")
-@RequestMapping("/public")
+//@RestController
+//@Api(value = "公开接口", description = "公开接口")
+//@RequestMapping("/public")
 public class PublicController {
     ChaincodeManager fabricManager;
 

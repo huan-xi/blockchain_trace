@@ -21,9 +21,9 @@ import java.util.Objects;
  * @date: 2019/3/15 11:31
  */
 
-@RequestMapping("/blockchain")
-@RestController
-@Api(value = "区块链信息", description = "区块链信息查询接口")
+//@RequestMapping("/blockchain")
+//@RestController
+//@Api(value = "区块链信息", description = "区块链信息查询接口")
 public class BlockChainController {
 
 
