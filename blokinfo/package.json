@@ -9,13 +9,15 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "echarts": "^4.2.1",
     "iview": "^3.3.3",
-    "vue": "^2.6.6"
+    "vue": "^2.6.6",
+    "vue-echarts": "^4.0.1"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.5.0",
     "@vue/cli-plugin-eslint": "^3.5.0",
-    "@vue/cli-service": "^3.5.0",
+    "@vue/cli-service": "^3.6.0",
     "babel-eslint": "^10.0.1",
     "eslint": "^5.8.0",
     "eslint-plugin-vue": "^5.0.0",

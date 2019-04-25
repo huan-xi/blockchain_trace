@@ -2,7 +2,9 @@
     <div class="page">
         <div class="block-table">
             <Table border :columns="columns" :data="data">
-                <div slot="header" class="table-header">最新出块</div>
+                <div slot="header" class="table-header">
+                    最新出块
+                </div>
                 <div slot="footer" class="table-footer">
                     <Page :total="count" @on-change="pageChange"/>
                 </div>
@@ -11,19 +13,21 @@
     </div>
 </template>
 
-<style scoped>
-    .page {
-
+<style>
+    .ivu-table-header tr th{
+        background-color: white;
+        font-size: 16px;
     }
 
     .block-table {
         margin: 30px;
+        box-shadow: 2px 2px 2px 0 #b8b8b8;
     }
 
     .table-header {
         padding-left: 20px;
-        background-color: #ddd;
         color: #000;
+        border-bottom: 1px solid gray;
         font-size: 20px;
     }
 
