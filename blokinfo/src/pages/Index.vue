@@ -3,7 +3,8 @@
         <div class="block-table">
             <Table border :columns="columns" :data="data">
                 <div slot="header" class="table-header">
-                    最新出块
+                    <div class="icon"></div>
+                      <span style="margin-left: 10px">最新出块</span>
                 </div>
                 <div slot="footer" class="table-footer">
                     <Page :total="count" @on-change="pageChange"/>
@@ -14,6 +15,13 @@
 </template>
 
 <style>
+    .icon {
+        width: 26px;
+        height: 25px;
+        float: left;
+        margin: 12px 4px 0 10px;
+        background: url(https://static.tokenview.com/_nuxt/img/block_icon.059a312.png);
+    }
     .ivu-table-header tr th{
         background-color: white;
         font-size: 16px;
@@ -46,28 +54,27 @@
                 size: 10,
                 columns: [
                     {
-                        title: '高度',
-                        key: 'blockNumber',
+                        title: '区块高度',
+                        key: 'height',
+                        width: '100'
+                    },{
+                        title: '读写集',
+                        key: 'rwSetCount',
                         width: '100'
                     },
                     {
-                        title: '大小(b)',
-                        key: 'size',
-                        width: '100'
-                    },
-                    {
-                        title: '播报方',
-                        key: 'creator',
+                        title: '节点名称',
+                        key: 'peerChannelName',
                         width: '150'
                     },
                     {
                         title: '时间',
-                        key: 'timestamp',
+                        key: 'createDate',
                         width: '200'
                     },
                     {
-                        title: '数据hash',
-                        key: 'dataHash'
+                        title: '前一块hash',
+                        key: 'previousHash'
                     }
                 ],
                 data: [],
@@ -76,27 +83,21 @@
         },
 
         created() {
-            axios.get('/api/blockchain/info').then(e => {
-                this.count = e.data.height
+            axios.get('/api/info/count').then(e => {
+                this.count = e.data.platform.blockCount/3
             })
             this.refresh()
         },
         methods: {
             refresh() {
-                axios.get(`/api/block/blocks?page=${this.page}&size=${this.size}`).then(e => {
+                axios.get(`/api/info/blockDaos`).then(e => {
                     console.log(e.data)
-                    let data = e.data.msg.rows
-                    for (let i = 0; i < data.length; i++) {
-                        data[i].creator = data[i].envelopes[0].creator.mspid
-                        data[i].timestamp = data[i].envelopes[0].timestamp
-                    }
-                    this.data = data
-                    console.log(this.data)
+                    this.data=e.data
                 })
             },
             pageChange(e) {
-                this.page = e
-                this.refresh()
+                // this.page = e
+                // this.refresh()
             }
         }
     }
