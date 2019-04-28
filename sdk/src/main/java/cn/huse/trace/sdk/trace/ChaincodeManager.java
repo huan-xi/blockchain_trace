@@ -1,7 +1,28 @@
 package cn.huse.trace.sdk.trace;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
+import cn.huse.trace.sdk.trace.bean.Chaincode;
+import cn.huse.trace.sdk.trace.bean.Orderers;
+import cn.huse.trace.sdk.trace.bean.Peers;
+import cn.huse.trace.web.response.model.BlockInfoModel;
+import com.google.protobuf.ByteString;
+import com.google.protobuf.InvalidProtocolBufferException;
+import org.apache.commons.codec.binary.Hex;
+import org.hyperledger.fabric.protos.ledger.rwset.kvrwset.KvRwset;
+import org.hyperledger.fabric.sdk.*;
+import org.hyperledger.fabric.sdk.BlockInfo.EnvelopeInfo;
+import org.hyperledger.fabric.sdk.BlockInfo.EnvelopeType;
+import org.hyperledger.fabric.sdk.BlockInfo.TransactionEnvelopeInfo;
+import org.hyperledger.fabric.sdk.exception.CryptoException;
+import org.hyperledger.fabric.sdk.exception.InvalidArgumentException;
+import org.hyperledger.fabric.sdk.exception.ProposalException;
+import org.hyperledger.fabric.sdk.exception.TransactionException;
+import org.hyperledger.fabric.sdk.security.CryptoSuite;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -10,51 +31,13 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.cert.CertificateException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
-import cn.huse.trace.sdk.trace.bean.Chaincode;
-import cn.huse.trace.sdk.trace.bean.Orderers;
-import cn.huse.trace.sdk.trace.bean.Peers;
-import cn.huse.trace.web.response.model.BlockInfoModel;
-import org.apache.commons.codec.binary.Hex;
-import org.hyperledger.fabric.protos.ledger.rwset.kvrwset.KvRwset;
-import org.hyperledger.fabric.sdk.BlockEvent;
-import org.hyperledger.fabric.sdk.BlockInfo;
-import org.hyperledger.fabric.sdk.BlockInfo.EnvelopeInfo;
-import org.hyperledger.fabric.sdk.BlockInfo.EnvelopeType;
-import org.hyperledger.fabric.sdk.BlockInfo.TransactionEnvelopeInfo;
-import org.hyperledger.fabric.sdk.BlockListener;
-import org.hyperledger.fabric.sdk.ChaincodeID;
-import org.hyperledger.fabric.sdk.Channel;
-import org.hyperledger.fabric.sdk.HFClient;
-import org.hyperledger.fabric.sdk.ProposalResponse;
-import org.hyperledger.fabric.sdk.QueryByChaincodeRequest;
-import org.hyperledger.fabric.sdk.SDKUtils;
-import org.hyperledger.fabric.sdk.TransactionProposalRequest;
-import org.hyperledger.fabric.sdk.TxReadWriteSetInfo;
-import org.hyperledger.fabric.sdk.exception.CryptoException;
-import org.hyperledger.fabric.sdk.exception.InvalidArgumentException;
-import org.hyperledger.fabric.sdk.exception.ProposalException;
-import org.hyperledger.fabric.sdk.exception.TransactionException;
-import org.hyperledger.fabric.sdk.security.CryptoSuite;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
-import com.google.protobuf.ByteString;
-import com.google.protobuf.InvalidProtocolBufferException;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
-
-//@Component
+@Component
 public class ChaincodeManager {
     private static Logger log = LoggerFactory.getLogger(ChaincodeManager.class);
     private FabricConfig config=new FabricConfig();

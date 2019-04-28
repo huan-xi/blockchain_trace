@@ -5,10 +5,6 @@ package cn.huse.trace.sdk.trace;
  * @date: 2019/3/7 15:37
  */
 
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.spec.InvalidKeySpecException;
 import cn.huse.trace.sdk.trace.bean.Chaincode;
 import cn.huse.trace.sdk.trace.bean.Orderers;
 import cn.huse.trace.sdk.trace.bean.Peers;
@@ -18,10 +14,15 @@ import org.hyperledger.fabric.sdk.exception.TransactionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.spec.InvalidKeySpecException;
+
 public class FabricManager {
 
-    private static final String CHAINCODE_NAME = "mycc";
-    private static final String CHANNEL_NAME = "tracechannel";
+    private static final String CHAINCODE_NAME = "funding";
+    private static final String CHANNEL_NAME = "mychannel";
     private final FabricConfig config;
     private ChaincodeManager manager;
 
