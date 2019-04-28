@@ -9,13 +9,13 @@ import cn.huse.trace.web.entity.User;
 import cn.huse.trace.web.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.io.*;
 
 /**
  * @author: huanxi
@@ -27,6 +27,8 @@ import javax.annotation.Resource;
 public class UserController {
     @Resource
     UserService userService;
+    @Value("${upload.path}")
+    String uploadPath;
 
     @PostMapping("")
     @ApiOperation("用户注册")
@@ -57,9 +59,38 @@ public class UserController {
         return new ReturnMessageMap(userService.getUser(userId));
     }
 
-    @PostMapping("/info")
-    @ApiOperation("获取用户信息")
-    public ReturnMessageMap updateUserInfo(User user, @ParseToken String userId) {
-        return new ReturnMessageMap(userService.getUser(userId));
+    @PutMapping("/info")
+    @ApiOperation("修改用户信息")
+    public ReturnMessageMap updateUserInfo(User user, @ParseToken String userId) throws DaoException {
+        user.setAccount(userId);
+        userService.update(user);
+        return new ReturnMessageMap("update successfully!");
     }
+
+
+    @PostMapping("/header")
+    @ApiOperation("修改用户头像")
+    public ReturnMessageMap updateUserHeader(@ParseToken String userId, MultipartFile image) throws DaoException {
+        File file;
+        try {
+            file = Utils.saveFile(image, uploadPath);
+        } catch (Exception e) {
+            return new ReturnMessageMap(5013, e.getMessage());
+        }
+        if (file == null) return new ReturnMessageMap("upload file failed!");
+        User user = userService.getUser(userId);
+        if (user != null) {
+            user.setHeaderUrl(file.getName());
+            userService.update(user);
+        }
+        return new ReturnMessageMap(user);
+    }
+
+    @GetMapping("projects")
+    @ApiOperation("查看我发布的项目")
+    public ReturnMessageMap getMyProjects(@ParseToken String userId) {
+
+        return null;
+    }
+
 }
