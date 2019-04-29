@@ -5,17 +5,21 @@ import cn.huse.trace.web.common.Utils;
 import cn.huse.trace.web.common.auth.jwt.JwtUserTokenUtil;
 import cn.huse.trace.web.config.parsetoken.ParseToken;
 import cn.huse.trace.web.dao.DaoException;
+import cn.huse.trace.web.entity.Transaction;
 import cn.huse.trace.web.entity.User;
+import cn.huse.trace.web.service.ProjectService;
+import cn.huse.trace.web.service.TransactionService;
 import cn.huse.trace.web.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import java.io.*;
+import java.io.File;
 
 /**
  * @author: huanxi
@@ -27,6 +31,10 @@ import java.io.*;
 public class UserController {
     @Resource
     UserService userService;
+    @Resource
+    ProjectService projectService;
+    @Resource
+    TransactionService transactionService;
     @Value("${upload.path}")
     String uploadPath;
 
@@ -89,8 +97,68 @@ public class UserController {
     @GetMapping("projects")
     @ApiOperation("查看我发布的项目")
     public ReturnMessageMap getMyProjects(@ParseToken String userId) {
+        return new ReturnMessageMap(projectService.queryByUserId(userId));
+    }
 
-        return null;
+    @PostMapping("charge")
+    @ApiOperation("模拟充值")
+    public ReturnMessageMap charge(@ParseToken String userId, @ApiParam("充值金额") float amount) {
+        if (amount <= 0) return new ReturnMessageMap(4011, "amount must be gt 0");
+        Transaction transaction = new Transaction();
+        transaction.setAmount(amount);
+        transaction.setInId("bank");
+        transaction.setOutId(userId);
+        try {
+            transactionService.addTransaction(transaction);
+        } catch (DaoException e) {
+            return new ReturnMessageMap(5021, e.getMessage());
+        }
+        return new ReturnMessageMap("ok");
+    }
+
+    @PostMapping("withdraw")
+    @ApiOperation("模拟提现")
+    public ReturnMessageMap withdraw(@ParseToken String userId, @ApiParam("充值金额") float amount) {
+        Transaction transaction = new Transaction();
+        transaction.setAmount(amount);
+        transaction.setInId(userId);
+        transaction.setOutId("bank");
+        try {
+            transactionService.addTransaction(transaction);
+        } catch (DaoException e) {
+            return new ReturnMessageMap(5021, e.getMessage());
+        }
+        return new ReturnMessageMap("ok");
+    }
+
+    @PostMapping("transfer")
+    @ApiOperation("模拟投资众筹")
+    public ReturnMessageMap transfer(@ParseToken String userId, @ApiParam("转账金额") float amount, @ApiParam("众筹项目") String project) {
+        return new ReturnMessageMap(projectService.queryByUserId(userId));
+    }
+
+    @GetMapping("balance")
+    @ApiOperation("查询余额")
+    public ReturnMessageMap getBalance(@ParseToken String userId) {
+        return new ReturnMessageMap(transactionService.getBalance(userId));
+    }
+
+    @GetMapping("transaction")
+    @ApiOperation("获取我的所有交易")
+    public ReturnMessageMap getTransaction(@ParseToken String userId) {
+        return new ReturnMessageMap(transactionService.getTransactionByUserId(userId));
+    }
+
+    @GetMapping("transaction/in")
+    @ApiOperation("获取转给我的所有交易")
+    public ReturnMessageMap getTransactionIn(@ParseToken String userId) {
+        return new ReturnMessageMap(transactionService.getTransactionInByUserId(userId));
+    }
+
+    @GetMapping("transaction/out")
+    @ApiOperation("获取我转出的所有交易")
+    public ReturnMessageMap getTransactionOut(@ParseToken String userId) {
+        return new ReturnMessageMap(transactionService.getTransactionOutByUserId(userId));
     }
 
 }

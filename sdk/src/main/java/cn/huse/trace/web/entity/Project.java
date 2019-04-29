@@ -6,6 +6,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 /**
  * 众筹项目
  *
@@ -15,7 +17,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @ApiModel("众筹项目")
-public class Project implements BaseEntity{
+public class Project implements BaseEntity, Serializable {
+    public static final int STATUS_PASS = 1;
+    public static final int STATUS_NOT_PASS = 1;
+    public static final int STATUS_WAITE = 0;
+    public static final int STATUS_ALL = -1;
     @ApiModelProperty("项目Id")
     private String projectId;
     @ApiModelProperty("项目描述图片")
@@ -28,6 +34,8 @@ public class Project implements BaseEntity{
     private String desc;
     @ApiModelProperty("目标金额")
     private float targetAmount;
+    @ApiModelProperty("状态(0 待审核,1 审核通过，2 审核未通过)")
+    private int status;
 
     @Override
     @JsonIgnore

@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 /**
  * @author: huanxi
@@ -17,7 +18,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @ApiModel("用户")
 @Data
-public class User implements JwtUser, BaseEntity {
+public class User implements JwtUser, BaseEntity, Serializable {
     @ApiModelProperty("头像地址")
     private String headerUrl;
     @ApiModelProperty("性别")
@@ -32,7 +33,6 @@ public class User implements JwtUser, BaseEntity {
     private String password;
     @ApiModelProperty("状态")
     private int status;
-
     @Override
     @JsonIgnore
     public Object getJwtUserId() {

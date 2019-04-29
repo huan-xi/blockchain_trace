@@ -3,6 +3,7 @@ package cn.huse.trace.sdk.trace;
 import cn.huse.trace.sdk.trace.bean.Chaincode;
 import cn.huse.trace.sdk.trace.bean.Orderers;
 import cn.huse.trace.sdk.trace.bean.Peers;
+import cn.huse.trace.web.common.QueryResult;
 import cn.huse.trace.web.response.model.BlockInfoModel;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
@@ -40,7 +41,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 @Component
 public class ChaincodeManager {
     private static Logger log = LoggerFactory.getLogger(ChaincodeManager.class);
-    private FabricConfig config=new FabricConfig();
+    private FabricConfig config = new FabricConfig();
     private Orderers orderers;
     private Peers peers;
     private Chaincode chaincode;
@@ -66,11 +67,13 @@ public class ChaincodeManager {
             FabricManager.obtain(config);
         } catch (CryptoException | InvalidArgumentException | NoSuchAlgorithmException | NoSuchProviderException | InvalidKeySpecException | TransactionException | IOException e) {
             e.printStackTrace();
-            log.error("obtain fabricManager failed."+e.getMessage());
+            log.error("obtain fabricManager failed." + e.getMessage());
         }
     }
-    public ChaincodeManager(){
+
+    public ChaincodeManager() {
     }
+
     public ChaincodeManager(String username, FabricConfig fabricConfig)
             throws CryptoException, InvalidArgumentException, NoSuchAlgorithmException, NoSuchProviderException, InvalidKeySpecException, IOException, TransactionException {
         this.config = fabricConfig;
@@ -226,9 +229,9 @@ public class ChaincodeManager {
      * @throws NoSuchProviderException
      * @throws NoSuchAlgorithmException
      */
-    public Map<String, String> invoke(String fcn, String[] args)
+    public QueryResult invoke(String fcn, String[] args)
             throws InvalidArgumentException, ProposalException, InterruptedException, ExecutionException, TimeoutException, NoSuchAlgorithmException, NoSuchProviderException, InvalidKeySpecException, CryptoException, TransactionException, IOException {
-        Map<String, String> resultMap = new HashMap<>();
+        QueryResult queryResult = new QueryResult();
         Collection<ProposalResponse> successful = new LinkedList<>();
         Collection<ProposalResponse> failed = new LinkedList<>();
         /// Send transaction proposal to all peers
@@ -236,7 +239,6 @@ public class ChaincodeManager {
         transactionProposalRequest.setChaincodeID(chaincodeID);
         transactionProposalRequest.setFcn(fcn);
         transactionProposalRequest.setArgs(args);
-
         Map<String, byte[]> tm2 = new HashMap<>();
         tm2.put("HyperLedgerFabric", "TransactionProposalRequest:JavaSDK".getBytes(UTF_8));
         tm2.put("method", "TransactionProposalRequest".getBytes(UTF_8));
@@ -252,8 +254,6 @@ public class ChaincodeManager {
                 failed.add(response);
             }
         }
-        log.info("channel send transaction proposal time = " + (System.currentTimeMillis() - currentStart));
-
         Collection<Set<ProposalResponse>> proposalConsistencySets = SDKUtils.getProposalConsistencySets(transactionPropResp);
         if (proposalConsistencySets.size() != 1) {
             log.error("Expected only one set of consistent proposal responses but got " + proposalConsistencySets.size());
@@ -263,9 +263,9 @@ public class ChaincodeManager {
             ProposalResponse firstTransactionProposalResponse = failed.iterator().next();
             log.error("Not enough endorsers for inspect:" + failed.size() + " endorser error: " + firstTransactionProposalResponse.getMessage() + ". Was verified: "
                     + firstTransactionProposalResponse.isVerified());
-            resultMap.put("code", "error");
-            resultMap.put("data", firstTransactionProposalResponse.getMessage());
-            return resultMap;
+            queryResult.setCode(QueryResult.CODE_ERROR);
+            queryResult.setData(firstTransactionProposalResponse.getMessage());
+            return queryResult;
         } else {
             log.info("Successfully received transaction proposal responses.");
             ProposalResponse resp = transactionPropResp.iterator().next();
@@ -277,10 +277,10 @@ public class ChaincodeManager {
             }
             log.info("resultAsString = " + resultAsString);
             channel.sendTransaction(successful);
-            resultMap.put("code", "success");
-            resultMap.put("data", resultAsString);
-            resultMap.put("txid", resp.getTransactionID());
-            return resultMap;
+            queryResult.setCode(QueryResult.CODE_SUCCESS);
+            queryResult.setData(resultAsString);
+            queryResult.setTxId(resp.getTransactionID());
+            return queryResult;
         }
 
 //		channel.sendTransaction(successful).thenApply(transactionEvent -> {
@@ -433,7 +433,7 @@ public class ChaincodeManager {
     }
 
     public static String printableString(final String string) {
-        return  string;
+        return string;
        /* int maxLogStringLength = 64;
         if (string == null || string.length() == 0) {
             return string;

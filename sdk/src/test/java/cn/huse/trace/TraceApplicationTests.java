@@ -2,7 +2,7 @@ package cn.huse.trace;
 
 import cn.huse.trace.web.dao.DaoException;
 import cn.huse.trace.web.dao.ProjectDao;
-import cn.huse.trace.web.entity.Project;
+import cn.huse.trace.web.dao.TransactionDao;
 import cn.huse.trace.web.entity.User;
 import cn.huse.trace.web.service.UserService;
 import org.junit.Test;
@@ -11,7 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -21,12 +20,22 @@ public class TraceApplicationTests {
     UserService userService;
     @Resource
     ProjectDao baseDao;
+    @Resource
+    TransactionDao transactionDao;
+
+    @Test
+    public void queryTransaction(){
+//        List<Transaction> a = transactionDao.getTransactionByUserId("user_1234ddd");
+        System.out.println(transactionDao.getBalance("user_1234ddd"));
+    }
 
     @Test
     public void query() {
-        Project b = baseDao.getValueBytes("project_1234_1ccd02df63e99f7ded297451c347adb2");
+        baseDao.deleteAll();
+//        Project b = baseDao.getValueBytes("project_1234_1ccd02df63e99f7ded297451c347adb2");
 //        System.out.println(b.toString());
-        List<Project> a = baseDao.queryByUserId("1234", 1, 3);
+//        List<Project> a = baseDao.queryByUserId("1234");
+//        List<Project> a = baseDao.all(1, 12);
     }
 
     @Test

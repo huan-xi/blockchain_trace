@@ -3,7 +3,6 @@ package cn.huse.trace.web.dao;
 import cn.huse.trace.web.entity.Project;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,18 +11,29 @@ import java.util.List;
  */
 @Component
 public class ProjectDao extends BaseDao<Project> {
-    private static final String SELECROT_BY_UDER_ID = "{\"selector\": {\"_id\": {\"$regex\": \"^project_%s_.{0,}$\"}},\"limit\": %d,\"skip\": %d}";
-    private static final String SELECROT_ALL = "{\"selector\": {\"_id\": { \"$gt\": \"\"}},\"limit\": %d,\"skip\": %d}";
+    private static final String PAGE = ",\"limit\": %d,\"skip\": %d";
+    private static final String SELECROT_BY_UDER_ID = "{\"selector\": {\"_id\": {\"$regex\": \"^Project_%s_.{0,}$\"}}}";
+    private static final String SELECROT_ALL = "{\"selector\": {\"_id\": {\"$regex\": \"^Project_.{0,}$\"}}}";
 
-    public List<Project> all(int page, int size) {
-        List<Project> ts = new ArrayList<>();
-//        String sql = String.format(SELECROT_STRING, size,size*page);
-//        RequestBody body = RequestBody.create(JSON_HEADER, sql);
-        return null;
+    public List<Project> all(int page, int size, int status) {
+        List<Project> ts;
+        String sql = String.format(SELECROT_ALL, size, size * (page - 1));
+        ts = query(sql);
+        if (ts != null && ts.size() > 0) {
+            List<Project> res;
+            if (status != Project.STATUS_ALL) {
+                List<Project> finalTs = ts;
+                ts.forEach(t -> {
+                    if (t.getStatus() != status) finalTs.remove(t);
+                });
+                ts = finalTs;
+            } else return null;
+        }
+        return ts;
     }
 
-    public List<Project> queryByUserId(String userId, int page, int size) {
-        String sql = String.format(SELECROT_BY_UDER_ID, userId, size, size * (page - 1));
+    public List<Project> queryByUserId(String userId) {
+        String sql = String.format(SELECROT_BY_UDER_ID, userId);
         return query(sql);
     }
 }
