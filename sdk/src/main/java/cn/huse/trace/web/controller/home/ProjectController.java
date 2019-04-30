@@ -40,7 +40,7 @@ public class ProjectController {
     @GetMapping("all")
     @ApiOperation("获取所有已经审核通过的项目")
     public ReturnMessageMap getAllProject(int page, int size) {
-        if (page > 0 && size > 0) return new ReturnMessageMap(projectService.all(page, size, -1));
+        if (page > 0 && size > 0) return new ReturnMessageMap(projectService.all(page, size));
         return new ReturnMessageMap(4010, "page or size must be gt 0");
     }
 
@@ -51,7 +51,7 @@ public class ProjectController {
         try {
             projectService.addProject(project);
         } catch (DaoException e) {
-            return new ReturnMessageMap(5010, "add project failed!");
+            return new ReturnMessageMap(5010, "add project failed!" + e.getMessage());
         }
         return new ReturnMessageMap("public successfully!");
     }
@@ -60,10 +60,11 @@ public class ProjectController {
     @ApiOperation("更新众筹项目")
     public ReturnMessageMap updateProject(Project project, @ParseToken String userId) {
         try {
+//            if (!project.getUserId().equals(userId)) new ReturnMessageMap(4031, "user not have this project");
             projectService.update(project);
         } catch (DaoException e) {
             return new ReturnMessageMap(5014, e.getMessage());
         }
-        return new ReturnMessageMap("public successfully!");
+        return new ReturnMessageMap("update successfully!");
     }
 }

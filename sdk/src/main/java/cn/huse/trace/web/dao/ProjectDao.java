@@ -11,29 +11,51 @@ import java.util.List;
  */
 @Component
 public class ProjectDao extends BaseDao<Project> {
-    private static final String PAGE = ",\"limit\": %d,\"skip\": %d";
-    private static final String SELECROT_BY_UDER_ID = "{\"selector\": {\"_id\": {\"$regex\": \"^Project_%s_.{0,}$\"}}}";
-    private static final String SELECROT_ALL = "{\"selector\": {\"_id\": {\"$regex\": \"^Project_.{0,}$\"}}}";
+
+    //分页查询所有
+    public List<Project> all(int page, int size) {
+        String sqlAll = "{\n" +
+                "   \"selector\": {\n" +
+                "      \"_id\": {\n" +
+                "         \"$regex\": \"^Project_.{0,}$\"\n" +
+                "      }\n" +
+                "   },\n" +
+                "   \"skip\": %d,\n" +
+                "   \"limit\": %d\n" +
+                "}";
+        sqlAll = String.format(sqlAll, (page - 1) * size, size);
+        return query(sqlAll);
+    }  //分页查询所有
 
     public List<Project> all(int page, int size, int status) {
-        List<Project> ts;
-        String sql = String.format(SELECROT_ALL, size, size * (page - 1));
-        ts = query(sql);
-        if (ts != null && ts.size() > 0) {
-            List<Project> res;
-            if (status != Project.STATUS_ALL) {
-                List<Project> finalTs = ts;
-                ts.forEach(t -> {
-                    if (t.getStatus() != status) finalTs.remove(t);
-                });
-                ts = finalTs;
-            } else return null;
-        }
-        return ts;
+        String sqlAll = "{\n" +
+                "   \"selector\": {\n" +
+                "      \"_id\": {\n" +
+                "         \"$regex\": \"^Project_.{0,}$\"\n" +
+                "      },\n" +
+                "      \"status\": {\n" +
+                "         \"$eq\": %d\n" +
+                "      }\n" +
+                "   },\n" +
+                "   \"skip\": %d,\n" +
+                "   \"limit\": %d\n" +
+                "}";
+        sqlAll = String.format(sqlAll, status, (page - 1) * size, size);
+        return query(sqlAll);
     }
 
     public List<Project> queryByUserId(String userId) {
-        String sql = String.format(SELECROT_BY_UDER_ID, userId);
+        String sql = "{\n" +
+                "   \"selector\": {\n" +
+                "      \"_id\": {\n" +
+                "         \"$regex\": \"^Project_.{0,}$\"\n" +
+                "      },\n" +
+                "      \"userId\": {\n" +
+                "         \"$eq\": \"%s\"\n" +
+                "      }\n" +
+                "   }\n" +
+                "}";
+        sql = String.format(sql, userId);
         return query(sql);
     }
 }

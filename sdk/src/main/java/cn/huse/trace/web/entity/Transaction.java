@@ -1,5 +1,6 @@
 package cn.huse.trace.web.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -11,7 +12,7 @@ import java.io.Serializable;
 @Data
 public class Transaction implements BaseEntity, Serializable {
 
-    public static final String TRANSACTION_FLAG = Transaction.class.getSimpleName();
+    public static final String FLAG = Transaction.class.getSimpleName();
     private String id;
     private float amount;
     private String inId;
@@ -25,6 +26,7 @@ public class Transaction implements BaseEntity, Serializable {
     }
 
     @Override
+    @JsonIgnore
     public String getId() {
         return this.id;
     }

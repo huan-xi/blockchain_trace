@@ -3,7 +3,7 @@ package cn.huse.trace.web.dao;
 import cn.huse.trace.sdk.trace.ChaincodeManager;
 import cn.huse.trace.sdk.trace.FabricManager;
 import cn.huse.trace.web.common.QueryResult;
-import com.alibaba.fastjson.JSON;
+import cn.huse.trace.web.common.Utils;
 import org.hyperledger.fabric.sdk.exception.CryptoException;
 import org.hyperledger.fabric.sdk.exception.InvalidArgumentException;
 import org.hyperledger.fabric.sdk.exception.ProposalException;
@@ -29,7 +29,7 @@ public class FabricDao {
 
     public QueryResult set(String key, Object object) {
         try {
-            return fabricManager.invoke("set", new String[]{key, JSON.toJSONString(object)});
+            return fabricManager.invoke("set", new String[]{key, Utils.parseToString(object)});
         } catch (InvalidArgumentException | ProposalException | InterruptedException | ExecutionException | TimeoutException | NoSuchAlgorithmException | NoSuchProviderException | InvalidKeySpecException | CryptoException | TransactionException | IOException e) {
             e.printStackTrace();
         }
@@ -38,7 +38,7 @@ public class FabricDao {
 
     public QueryResult update(String key, Object object) {
         try {
-            return fabricManager.invoke("update", new String[]{key, JSON.toJSONString(object)});
+            return fabricManager.invoke("update", new String[]{key, Utils.parseToString(object)});
         } catch (InvalidArgumentException | ProposalException | InterruptedException | ExecutionException | TimeoutException | NoSuchAlgorithmException | NoSuchProviderException | InvalidKeySpecException | CryptoException | TransactionException | IOException e) {
             e.printStackTrace();
         }

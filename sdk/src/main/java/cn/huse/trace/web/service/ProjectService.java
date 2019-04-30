@@ -18,11 +18,11 @@ public class ProjectService {
     @Resource
     ProjectDao projectDao;
 
-    private final static String PROJECT_FLAG = "Project_";
 
     public void addProject(Project project) throws DaoException {
-        project.setProjectId(PROJECT_FLAG + project.getUserId() + "_" + Utils.getUUID());
+        project.setProjectId(Project.FLAG + "_" + Utils.getUUID());
         project.setStatus(Project.STATUS_WAITE);
+        project.setCreateTime(System.currentTimeMillis());
         projectDao.add(project);
     }
 
@@ -30,8 +30,8 @@ public class ProjectService {
         return projectDao.get(projectId);
     }
 
-    public List<Project> all(int page, int size,int status) {
-        return projectDao.all(page, size, status);
+    public List<Project> all(int page, int size) {
+        return projectDao.all(page, size);
     }
 
     public void update(Project project) throws DaoException {

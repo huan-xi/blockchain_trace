@@ -6,7 +6,6 @@ import cn.huse.trace.web.entity.Transaction;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,55 +14,101 @@ import java.util.List;
  */
 @Component
 public class TransactionDao extends BaseDao<Transaction> {
-    private static final String SELECTOR_BY_USER_ID = "{\"selector\": {\"_id\": {\"$regex\": \"^Transaction_.{0,}%s.{0,}$\"}}}";
-    private static final String KEY_USER_RANSACTION = "user_transaction";
     @Resource
     RedisDao redisDao;
     @Resource
     CacheHelper cacheHelper;
 
-    //获取所有我的交易
+    /**
+     * 获取所有我的交易
+     * 先查充值
+     */
+
+    public List<Transaction> getTransactionByUserId(String userKey,int page,int size) {
+        String sql = "{\n" +
+                "   \"selector\": {\n" +
+                "      \"_id\": {\n" +
+                "         \"$regex\": \"^Transaction_.{0,}$\"\n" +
+                "      },\n" +
+                "      \"$or\": [\n" +
+                "         {\n" +
+                "            \"inId\": {\n" +
+                "               \"$eq\": \"%s\"\n" +
+                "            }\n" +
+                "         },\n" +
+                "         {\n" +
+                "            \"outId\": {\n" +
+                "               \"$eq\": \"%s\"\n" +
+                "            }\n" +
+                "         }\n" +
+                "      ]\n" +
+                "   },\n" +
+                "   \"skip\": %d,\n" +
+                "   \"limit\": %d\n" +
+                "}";
+        sql=String.format(sql,userKey,userKey,(page - 1) * size, size);
+        return query(sql);
+    }
     public List<Transaction> getTransactionByUserId(String userKey) {
-        List a = null;
-        if (cacheHelper.isKeyAble(KEY_USER_RANSACTION + userKey)) {
-            //读取缓存
-            a = redisDao.lGet(KEY_USER_RANSACTION + userKey, 0, -1);
-            if (a != null && a.size() > 0) a = (List) a.get(0);
-        }
-        if (a == null) {
-            String sql = String.format(SELECTOR_BY_USER_ID, userKey);
-            a = query(sql);
-            redisDao.lSet(KEY_USER_RANSACTION + userKey, a);
-            cacheHelper.setKeyAble(KEY_USER_RANSACTION + userKey, true);
-        }
-        return a;
+        String sql = "{\n" +
+                "   \"selector\": {\n" +
+                "      \"_id\": {\n" +
+                "         \"$regex\": \"^Transaction_.{0,}$\"\n" +
+                "      },\n" +
+                "      \"$or\": [\n" +
+                "         {\n" +
+                "            \"inId\": {\n" +
+                "               \"$eq\": \"%s\"\n" +
+                "            }\n" +
+                "         },\n" +
+                "         {\n" +
+                "            \"outId\": {\n" +
+                "               \"$eq\": \"%s\"\n" +
+                "            }\n" +
+                "         }\n" +
+                "      ]\n" +
+                "   }\n" +
+                "}";
+        sql=String.format(sql,userKey,userKey);
+        return query(sql);
     }
 
     //获取所有转给我的
     public List<Transaction> getTransactionInByUserId(String userKey) {
-        List<Transaction> in = new ArrayList<>();
-        List<Transaction> a = getTransactionByUserId(userKey);
-        a.forEach(transaction -> {
-            if (transaction.getInId().equals(userKey))
-                in.add(transaction);
-        });
-        return in;
+        String sql = "{\n" +
+                "   \"selector\": {\n" +
+                "      \"_id\": {\n" +
+                "         \"$regex\": \"^Transaction_.{0,}$\"\n" +
+                "      },\n" +
+                "      \"inId\": {\n" +
+                "         \"$eq\": \"%s\"\n" +
+                "      }\n" +
+                "   }\n" +
+                "}";
+        sql=String.format(sql,userKey);
+        return query(sql);
     }
 
     //获取所有我转出的交易
     public List<Transaction> getTransactionOutByUserId(String userKey) {
-        List<Transaction> out = new ArrayList<>();
-        List<Transaction> a = getTransactionByUserId(userKey);
-        a.forEach(transaction -> {
-            if (transaction.getOutId().equals(userKey))
-                out.add(transaction);
-        });
-        return out;
+        String sql = "{\n" +
+                "   \"selector\": {\n" +
+                "      \"_id\": {\n" +
+                "         \"$regex\": \"^Transaction_.{0,}$\"\n" +
+                "      },\n" +
+                "      \"outId\": {\n" +
+                "         \"$eq\": \"%s\"\n" +
+                "      }\n" +
+                "   }\n" +
+                "}";
+        sql=String.format(sql,userKey);
+        return query(sql);
     }
 
     public float getBalance(String userId) {
         final float[] balance = {0};
         List<Transaction> a = getTransactionByUserId(userId);
+        if (a == null) return 0;
         a.forEach(transaction -> {
             if (transaction.getInId().equals(userId))
                 balance[0] -= transaction.getAmount();

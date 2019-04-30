@@ -3,6 +3,7 @@ package cn.huse.trace.sdk.trace;
 import cn.huse.trace.sdk.trace.bean.Chaincode;
 import cn.huse.trace.sdk.trace.bean.Orderers;
 import cn.huse.trace.sdk.trace.bean.Peers;
+import cn.huse.trace.sdk.util.StringUtil;
 import cn.huse.trace.web.common.QueryResult;
 import cn.huse.trace.web.response.model.BlockInfoModel;
 import com.google.protobuf.ByteString;
@@ -231,6 +232,7 @@ public class ChaincodeManager {
      */
     public QueryResult invoke(String fcn, String[] args)
             throws InvalidArgumentException, ProposalException, InterruptedException, ExecutionException, TimeoutException, NoSuchAlgorithmException, NoSuchProviderException, InvalidKeySpecException, CryptoException, TransactionException, IOException {
+        if (args.length > 1) args[1] = StringUtil.formatJsonString(args[1]);
         QueryResult queryResult = new QueryResult();
         Collection<ProposalResponse> successful = new LinkedList<>();
         Collection<ProposalResponse> failed = new LinkedList<>();
@@ -244,7 +246,6 @@ public class ChaincodeManager {
         tm2.put("method", "TransactionProposalRequest".getBytes(UTF_8));
         tm2.put("result", ":)".getBytes(UTF_8));
         transactionProposalRequest.setTransientMap(tm2);
-
         long currentStart = System.currentTimeMillis();
         Collection<ProposalResponse> transactionPropResp = channel.sendTransactionProposal(transactionProposalRequest, channel.getPeers());
         for (ProposalResponse response : transactionPropResp) {

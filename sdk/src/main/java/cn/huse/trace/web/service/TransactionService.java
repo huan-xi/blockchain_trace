@@ -20,7 +20,8 @@ public class TransactionService {
 
     public void addTransaction(Transaction transaction) throws DaoException {
         //构造Id
-        transaction.setId(Transaction.TRANSACTION_FLAG + "_" + transaction.getInId() + "_" + transaction.getOutId() + "_" + Utils.getUUID());
+        transaction.setId(Transaction.FLAG + "_"   + Utils.getUUID());
+        transaction.setTime(System.currentTimeMillis());
         transactionDao.add(transaction);
     }
 
@@ -28,8 +29,8 @@ public class TransactionService {
        return transactionDao.getBalance(userId);
     }
 
-    public List<Transaction> getTransactionByUserId(String userKey) {
-        return transactionDao.getTransactionByUserId(userKey);
+    public List<Transaction> getTransactionByUserId(String userKey,int page,int size) {
+        return transactionDao.getTransactionByUserId(userKey,page,size);
     }
 
     public List<Transaction> getTransactionInByUserId(String userKey) {

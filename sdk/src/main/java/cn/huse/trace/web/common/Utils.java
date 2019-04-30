@@ -5,6 +5,8 @@
 
 package cn.huse.trace.web.common;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -44,6 +46,18 @@ public class Utils {
 
     public static String generateToken() {
         return DigestUtils.md5Hex("imp" + System.currentTimeMillis() + Math.random());
+    }
+
+
+    public static String parseToString(Object o) {
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonString = null;
+        try {
+            jsonString = mapper.writeValueAsString(o);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return jsonString;
     }
 
     public static String getUUID() {

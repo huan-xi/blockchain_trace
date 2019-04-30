@@ -10,6 +10,8 @@ import javax.annotation.Resource;
  */
 @Component
 public class CacheHelper {
+    public static final String KEY = "key";
+    public static final String SQL = "sql";
     @Resource
     RedisDao redisDao;
     private final static String KEY_CANAVLE = "key_can_able_"; //缓存是否能用

@@ -18,6 +18,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 @ApiModel("众筹项目")
 public class Project implements BaseEntity, Serializable {
+
+    public static final String FLAG = Project.class.getSimpleName();
     public static final int STATUS_PASS = 1;
     public static final int STATUS_NOT_PASS = 1;
     public static final int STATUS_WAITE = 0;
@@ -34,6 +36,8 @@ public class Project implements BaseEntity, Serializable {
     private String desc;
     @ApiModelProperty("目标金额")
     private float targetAmount;
+    @ApiModelProperty("发布时间")
+    private long createTime;
     @ApiModelProperty("状态(0 待审核,1 审核通过，2 审核未通过)")
     private int status;
 

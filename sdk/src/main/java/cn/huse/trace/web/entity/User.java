@@ -19,6 +19,7 @@ import java.io.Serializable;
 @ApiModel("用户")
 @Data
 public class User implements JwtUser, BaseEntity, Serializable {
+    public static final String FLAG = User.class.getSimpleName();
     @ApiModelProperty("头像地址")
     private String headerUrl;
     @ApiModelProperty("性别")
@@ -33,6 +34,7 @@ public class User implements JwtUser, BaseEntity, Serializable {
     private String password;
     @ApiModelProperty("状态")
     private int status;
+
     @Override
     @JsonIgnore
     public Object getJwtUserId() {

@@ -1,6 +1,7 @@
 package cn.huse.trace.web.response.model;
 
-import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.codec.binary.Hex;
@@ -34,7 +35,14 @@ public class BlockInfoModel {
         blockInfo.getEnvelopeInfos().forEach(envelopeInfo -> {
             envelopes.add(new EnvelopeModel(envelopeInfo));
         });
-        this.size = JSON.toJSONString(this).getBytes().length*1024;
+        ObjectMapper mapper = new ObjectMapper();
+        String mapJakcson=null;
+        try {
+             mapJakcson = mapper.writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        this.size = mapJakcson==null?0:mapJakcson.getBytes().length*1024;
     }
 
     public BlockInfoModel() {

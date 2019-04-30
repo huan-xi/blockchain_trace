@@ -108,6 +108,7 @@ public class UserController {
         transaction.setAmount(amount);
         transaction.setInId("bank");
         transaction.setOutId(userId);
+        transaction.setDesc("从银行卡充值");
         try {
             transactionService.addTransaction(transaction);
         } catch (DaoException e) {
@@ -123,6 +124,7 @@ public class UserController {
         transaction.setAmount(amount);
         transaction.setInId(userId);
         transaction.setOutId("bank");
+        transaction.setDesc("体现");
         try {
             transactionService.addTransaction(transaction);
         } catch (DaoException e) {
@@ -134,7 +136,7 @@ public class UserController {
     @PostMapping("transfer")
     @ApiOperation("模拟投资众筹")
     public ReturnMessageMap transfer(@ParseToken String userId, @ApiParam("转账金额") float amount, @ApiParam("众筹项目") String project) {
-        return new ReturnMessageMap(projectService.queryByUserId(userId));
+        return null;
     }
 
     @GetMapping("balance")
@@ -145,8 +147,8 @@ public class UserController {
 
     @GetMapping("transaction")
     @ApiOperation("获取我的所有交易")
-    public ReturnMessageMap getTransaction(@ParseToken String userId) {
-        return new ReturnMessageMap(transactionService.getTransactionByUserId(userId));
+    public ReturnMessageMap getTransaction(@ParseToken String userId, int page, int size) {
+        return new ReturnMessageMap(transactionService.getTransactionByUserId(userId, page, size));
     }
 
     @GetMapping("transaction/in")
