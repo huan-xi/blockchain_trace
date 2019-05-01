@@ -8,5 +8,9 @@ spring:
   redis:
     host: 120.77.34.74
     timeout: 10000
+fabric:
+  path: C:\\Users\\huanxi\\Desktop\\project\\trace\\sdk\\src\\main\\resources\\fabric
+upload:
+  path: C:\\Users\\huanxi\\Pictures\\upload\\
 couchdb:
   url: http://120.77.34.74:5984/mychannel_funding/

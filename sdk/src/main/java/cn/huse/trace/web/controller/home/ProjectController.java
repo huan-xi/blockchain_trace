@@ -7,6 +7,7 @@ import cn.huse.trace.web.entity.Project;
 import cn.huse.trace.web.service.ProjectService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -23,19 +24,6 @@ public class ProjectController {
     @Resource
     private ProjectService projectService;
 
-/*    @GetMapping("all/pass")
-    @ApiOperation("获取所有已经审核通过的项目")
-    public ReturnMessageMap getAllPassProject(int page, int size) {
-        if (page > 0 && size > 0) return new ReturnMessageMap(projectService.all(page, size));
-        return null;
-    }
-
-    @GetMapping("all/nopass")
-    @ApiOperation("获取所有已经审核通过的项目")
-    public ReturnMessageMap getAllNoPassProject(int page, int size) {
-        if (page > 0 && size > 0) return new ReturnMessageMap(projectService.all(page, size,Project.STATUS_NOT_PASS));
-        return null;
-    }*/
 
     @GetMapping("all")
     @ApiOperation("获取所有已经审核通过的项目")
@@ -59,9 +47,16 @@ public class ProjectController {
     @PutMapping
     @ApiOperation("更新众筹项目")
     public ReturnMessageMap updateProject(Project project, @ParseToken String userId) {
+        if (project.getProjectId() == null) new ReturnMessageMap(4010, "project id must be not null");
+        Project t = projectService.getProject(project.getProjectId());
+        if (t == null) new ReturnMessageMap(4032, "not exists this project");
         try {
-//            if (!project.getUserId().equals(userId)) new ReturnMessageMap(4031, "user not have this project");
-            projectService.update(project);
+            if (!t.getUserId().equals(userId)) new ReturnMessageMap(4031, "user not have this project");
+            if (!StringUtils.isEmpty(project.getDesc())) t.setDesc(project.getDesc());
+            if (project.getTargetAmount() > 0) t.setTargetAmount(project.getTargetAmount());
+            if (!StringUtils.isEmpty(project.getTitle())) t.setTitle(project.getTitle());
+            if (!StringUtils.isEmpty(project.getImage())) t.setImage(project.getImage());
+            projectService.update(t);
         } catch (DaoException e) {
             return new ReturnMessageMap(5014, e.getMessage());
         }

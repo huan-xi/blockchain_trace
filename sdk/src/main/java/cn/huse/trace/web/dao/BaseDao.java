@@ -108,7 +108,7 @@ public class BaseDao<T extends BaseEntity> {
     }*/
     public List<T> query(String sql) {
         List<T> ts = new ArrayList<>();
-        log.info("执行sql" + sql);
+//        log.info("执行sql" + sql);
         RequestBody body = RequestBody.create(JSON_HEADER, sql);
         final Request request = new Request.Builder()
                 .url(url + "_find").post(body)

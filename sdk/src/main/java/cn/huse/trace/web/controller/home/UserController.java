@@ -14,6 +14,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -52,7 +53,7 @@ public class UserController {
     @PostMapping("/token")
     @ApiOperation("用户登入获取token")
     public ReturnMessageMap addToken(@Validated User user) {
-        User user1 = userService.getUser(user.getAccount());
+        User user1 = userService.getUserByAccount(user.getAccount());
         if (user1 == null) return new ReturnMessageMap(4010, "not exist this user");
         if (user1.getPassword().equals(Utils.passwd(user.getPassword()))) {
             String token = JwtUserTokenUtil.generateToken(user1);
@@ -68,10 +69,13 @@ public class UserController {
     }
 
     @PutMapping("/info")
-    @ApiOperation("修改用户信息")
+    @ApiOperation("修改用户信息(性别和名字)")
     public ReturnMessageMap updateUserInfo(User user, @ParseToken String userId) throws DaoException {
         user.setAccount(userId);
-        userService.update(user);
+        User t = userService.getUser(userId);
+        if (!StringUtils.isEmpty(user.getSex())) t.setSex(user.getSex());
+        if (!StringUtils.isEmpty(user.getName())) t.setName(user.getName());
+        userService.update(t);
         return new ReturnMessageMap("update successfully!");
     }
 
@@ -135,8 +139,19 @@ public class UserController {
 
     @PostMapping("transfer")
     @ApiOperation("模拟投资众筹")
-    public ReturnMessageMap transfer(@ParseToken String userId, @ApiParam("转账金额") float amount, @ApiParam("众筹项目") String project) {
-        return null;
+    public ReturnMessageMap transfer(@ParseToken String userId, @ApiParam("转账金额") float amount, @ApiParam("众筹项目Id") String projectId) {
+        if (projectService.getProject(projectId)==null)return new ReturnMessageMap(4030,"not exists this project!");
+        Transaction transaction = new Transaction();
+        transaction.setAmount(amount);
+        transaction.setInId(userId);
+        transaction.setOutId(projectId);
+        transaction.setDesc("众筹");
+        try {
+            transactionService.addTransaction(transaction);
+        } catch (DaoException e) {
+            return new ReturnMessageMap(5021, e.getMessage());
+        }
+        return new ReturnMessageMap("ok");
     }
 
     @GetMapping("balance")

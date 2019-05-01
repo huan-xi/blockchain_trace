@@ -25,8 +25,12 @@ public class UserService {
         userDao.add(user);
     }
 
-    public User getUser(String account) {
+    public User getUserByAccount(String account) {
         return userDao.get(User.FLAG + "_" + account);
+    }
+
+    public User getUser(String id) {
+        return userDao.get(id);
     }
 
     public void update(User user) throws DaoException {
