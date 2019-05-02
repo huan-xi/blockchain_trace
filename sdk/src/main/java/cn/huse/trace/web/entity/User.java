@@ -22,13 +22,19 @@ public class User implements JwtUser, BaseEntity, Serializable {
     public static final String FLAG = User.class.getSimpleName();
     @ApiModelProperty("头像地址")
     private String headerUrl;
+    @NotNull
+    @ApiModelProperty("账号")
+    private String account;
     @ApiModelProperty("性别")
     private String sex;
     @ApiModelProperty("昵称")
     private String name;
-    @NotNull
-    @ApiModelProperty("账号")
-    private String account;
+    @ApiModelProperty("手机号")
+    private String phone;
+    @ApiModelProperty("详细描述")
+    private String desc;
+    @ApiModelProperty("注册时间")
+    private String createTime;
     @NotNull
     @ApiModelProperty("密码")
     private String password;

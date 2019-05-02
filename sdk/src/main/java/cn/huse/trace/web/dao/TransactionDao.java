@@ -24,7 +24,7 @@ public class TransactionDao extends BaseDao<Transaction> {
      * 先查充值
      */
 
-    public List<Transaction> getTransactionByUserId(String userKey,int page,int size) {
+    public List<Transaction> getTransactionByUserId(String userKey, int page, int size) {
         String sql = "{\n" +
                 "   \"selector\": {\n" +
                 "      \"_id\": {\n" +
@@ -46,9 +46,10 @@ public class TransactionDao extends BaseDao<Transaction> {
                 "   \"skip\": %d,\n" +
                 "   \"limit\": %d\n" +
                 "}";
-        sql=String.format(sql,userKey,userKey,(page - 1) * size, size);
+        sql = String.format(sql, userKey, userKey, (page - 1) * size, size);
         return query(sql);
     }
+
     public List<Transaction> getTransactionByUserId(String userKey) {
         String sql = "{\n" +
                 "   \"selector\": {\n" +
@@ -69,52 +70,57 @@ public class TransactionDao extends BaseDao<Transaction> {
                 "      ]\n" +
                 "   }\n" +
                 "}";
-        sql=String.format(sql,userKey,userKey);
+        sql = String.format(sql, userKey, userKey);
+        return query(sql);
+    }
+
+    public List<Transaction> queryTransaction(String key, String regex) {
+        String sql = "{\n" +
+                "   \"selector\": {\n" +
+                "      \"_id\": {\n" +
+                "         \"$regex\": \"^Transaction_.{0,}$\"\n" +
+                "      },\n" +
+                "      \"%s\": {\n" +
+                "         \"$eq\": \"%s\"\n" +
+                "      }\n" +
+                "   }\n" +
+                "}";
+
+        sql = String.format(sql, key, regex);
         return query(sql);
     }
 
     //获取所有转给我的
     public List<Transaction> getTransactionInByUserId(String userKey) {
-        String sql = "{\n" +
-                "   \"selector\": {\n" +
-                "      \"_id\": {\n" +
-                "         \"$regex\": \"^Transaction_.{0,}$\"\n" +
-                "      },\n" +
-                "      \"inId\": {\n" +
-                "         \"$eq\": \"%s\"\n" +
-                "      }\n" +
-                "   }\n" +
-                "}";
-        sql=String.format(sql,userKey);
-        return query(sql);
+        return queryTransaction("inId", userKey);
     }
 
     //获取所有我转出的交易
     public List<Transaction> getTransactionOutByUserId(String userKey) {
-        String sql = "{\n" +
-                "   \"selector\": {\n" +
-                "      \"_id\": {\n" +
-                "         \"$regex\": \"^Transaction_.{0,}$\"\n" +
-                "      },\n" +
-                "      \"outId\": {\n" +
-                "         \"$eq\": \"%s\"\n" +
-                "      }\n" +
-                "   }\n" +
-                "}";
-        sql=String.format(sql,userKey);
-        return query(sql);
+        return queryTransaction("outId", userKey);
     }
 
     public float getBalance(String userId) {
-        final float[] balance = {0};
-        List<Transaction> a = getTransactionByUserId(userId);
-        if (a == null) return 0;
-        a.forEach(transaction -> {
-            if (transaction.getInId().equals(userId))
-                balance[0] -= transaction.getAmount();
-            else if (transaction.getOutId().equals(userId))
-                balance[0] += transaction.getAmount();
-        });
-        return balance[0];
+        Float t = null;
+        if (cacheHelper.isKeyAble(CacheHelper.Balance + userId)) {
+            try {
+                t = (Float) redisDao.get(CacheHelper.Balance + userId);
+            } catch (Exception e) {
+                cacheHelper.setKeyAble(CacheHelper.Balance + userId, false);
+            }
+        }
+        if (t == null) {
+            final float[] balances = {0};
+            List<Transaction> a = getTransactionByUserId(userId);
+            if (a == null) return 0;
+            a.forEach(transaction -> {
+                if (transaction.getInId().equals(userId))
+                    balances[0] -= transaction.getAmount();
+                else if (transaction.getOutId().equals(userId))
+                    balances[0] += transaction.getAmount();
+            });
+            t=balances[0];
+        }
+        return t;
     }
 }

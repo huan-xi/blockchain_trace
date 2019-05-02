@@ -2,6 +2,7 @@ package cn.huse.trace;
 
 
 import cn.huse.trace.web.entity.Project;
+import cn.huse.trace.web.entity.User;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import okhttp3.*;
@@ -21,6 +22,14 @@ import java.util.List;
  * @date: 2019/3/6 23:54
  */
 public class Test {
+    @org.junit.Test
+    public void  tests(){
+        User user=new User();
+        user.setDesc("test");
+        user.setPhone("123");
+        user.setStatus(1);
+        System.out.println(user.toString());
+    }
     public static final MediaType JSON_HEADER = MediaType.parse("application/json; charset=utf-8");
 
     @org.junit.Test

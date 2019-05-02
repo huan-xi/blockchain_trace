@@ -7,6 +7,7 @@ import cn.huse.trace.web.config.parsetoken.ParseToken;
 import cn.huse.trace.web.dao.DaoException;
 import cn.huse.trace.web.entity.Transaction;
 import cn.huse.trace.web.entity.User;
+import cn.huse.trace.web.entity.view.UserView;
 import cn.huse.trace.web.service.ProjectService;
 import cn.huse.trace.web.service.TransactionService;
 import cn.huse.trace.web.service.UserService;
@@ -65,7 +66,8 @@ public class UserController {
     @GetMapping("/info")
     @ApiOperation("获取用户信息")
     public ReturnMessageMap getUserInfo(@ParseToken String userId) {
-        return new ReturnMessageMap(userService.getUser(userId));
+        User user = userService.getUser(userId);
+        return new ReturnMessageMap(new UserView(user, transactionService.getBalance(userId)));
     }
 
     @PutMapping("/info")
@@ -75,6 +77,8 @@ public class UserController {
         User t = userService.getUser(userId);
         if (!StringUtils.isEmpty(user.getSex())) t.setSex(user.getSex());
         if (!StringUtils.isEmpty(user.getName())) t.setName(user.getName());
+        if (!StringUtils.isEmpty(user.getPhone())) t.setPhone(user.getPhone());
+        if (!StringUtils.isEmpty(user.getDesc())) t.setDesc(user.getDesc());
         userService.update(t);
         return new ReturnMessageMap("update successfully!");
     }
@@ -140,7 +144,7 @@ public class UserController {
     @PostMapping("transfer")
     @ApiOperation("模拟投资众筹")
     public ReturnMessageMap transfer(@ParseToken String userId, @ApiParam("转账金额") float amount, @ApiParam("众筹项目Id") String projectId) {
-        if (projectService.getProject(projectId)==null)return new ReturnMessageMap(4030,"not exists this project!");
+        if (projectService.getProject(projectId) == null) return new ReturnMessageMap(4030, "not exists this project!");
         Transaction transaction = new Transaction();
         transaction.setAmount(amount);
         transaction.setInId(userId);

@@ -52,7 +52,11 @@ public class BaseDao<T extends BaseEntity> {
     public T get(String id) {
         T t = null;
         if (cacheHelper.isKeyAble(CacheHelper.KEY + id)) {
-            t = (T) redisDao.get(CacheHelper.KEY + id);
+            try {
+                t = (T) redisDao.get(CacheHelper.KEY + id);
+            } catch (Exception e) {
+                cacheHelper.setKeyAble(CacheHelper.KEY + id, false);
+            }
         }
         if (t == null) {
             //查valueByteId

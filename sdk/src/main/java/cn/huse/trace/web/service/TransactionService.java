@@ -1,5 +1,6 @@
 package cn.huse.trace.web.service;
 
+import cn.huse.trace.web.cache.CacheHelper;
 import cn.huse.trace.web.common.Utils;
 import cn.huse.trace.web.dao.DaoException;
 import cn.huse.trace.web.dao.TransactionDao;
@@ -18,19 +19,25 @@ public class TransactionService {
     @Resource
     TransactionDao transactionDao;
 
+    @Resource
+    CacheHelper cacheHelper;
+
     public void addTransaction(Transaction transaction) throws DaoException {
+        //设置缓存无效
+        cacheHelper.setKeyAble(CacheHelper.Balance + transaction.getOutId(), false);
+        cacheHelper.setKeyAble(CacheHelper.Balance + transaction.getInId(), false);
         //构造Id
-        transaction.setId(Transaction.FLAG + "_"   + Utils.getUUID());
+        transaction.setId(Transaction.FLAG + "_" + Utils.getUUID());
         transaction.setTime(System.currentTimeMillis());
         transactionDao.add(transaction);
     }
 
     public float getBalance(String userId) {
-       return transactionDao.getBalance(userId);
+        return transactionDao.getBalance(userId);
     }
 
-    public List<Transaction> getTransactionByUserId(String userKey,int page,int size) {
-        return transactionDao.getTransactionByUserId(userKey,page,size);
+    public List<Transaction> getTransactionByUserId(String userKey, int page, int size) {
+        return transactionDao.getTransactionByUserId(userKey, page, size);
     }
 
     public List<Transaction> getTransactionInByUserId(String userKey) {
