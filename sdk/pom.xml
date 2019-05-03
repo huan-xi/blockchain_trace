@@ -44,6 +44,12 @@
             <artifactId>jjwt</artifactId>
             <version>0.9.0</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/commons-beanutils/commons-beanutils -->
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>1.9.3</version>
+        </dependency>
         <!-- swagger配置(API 文档) -->
         <dependency>
             <groupId>io.springfox</groupId>
@@ -54,12 +60,6 @@
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
             <version>2.2.2</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/commons-beanutils/commons-beanutils -->
-        <dependency>
-            <groupId>commons-beanutils</groupId>
-            <artifactId>commons-beanutils</artifactId>
-            <version>1.9.3</version>
         </dependency>
 
         <!--swagger 报错必加-->
@@ -74,6 +74,7 @@
             <artifactId>swagger-bootstrap-ui</artifactId>
             <version>1.7</version>
         </dependency>
+        <!--swagger 配置结束-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>

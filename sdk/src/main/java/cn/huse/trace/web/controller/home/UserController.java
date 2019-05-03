@@ -99,7 +99,7 @@ public class UserController {
             user.setHeaderUrl(file.getName());
             userService.update(user);
         }
-        return new ReturnMessageMap(user);
+        return new ReturnMessageMap("上传成功");
     }
 
     @GetMapping("projects")
