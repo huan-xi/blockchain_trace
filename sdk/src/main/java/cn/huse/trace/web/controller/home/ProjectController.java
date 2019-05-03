@@ -18,7 +18,7 @@ import javax.annotation.Resource;
  */
 @RestController
 @Api(value = "项目接口", description = "项目接口")
-@RequestMapping("project")
+@RequestMapping("/project")
 public class ProjectController {
 
     @Resource
