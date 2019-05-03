@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
@@ -15,7 +14,7 @@ import java.io.Serializable;
  * @date: 2019/4/28 13:35
  */
 @Data
-@NoArgsConstructor
+//@NoArgsConstructor
 @ApiModel("众筹项目")
 public class Project implements BaseEntity, Serializable {
 
@@ -38,7 +37,9 @@ public class Project implements BaseEntity, Serializable {
     private float targetAmount;
     @ApiModelProperty("发布时间")
     private long createTime;
-    @ApiModelProperty("状态(0 待审核,1 审核通过，2 审核未通过)")
+    @ApiModelProperty("发布地址")
+    private String address;
+    @ApiModelProperty("状,1 审核通过，2 审核未通过)")
     private int status;
 
     @Override

@@ -4,13 +4,19 @@ import cn.huse.trace.web.common.ReturnMessageMap;
 import cn.huse.trace.web.config.parsetoken.ParseToken;
 import cn.huse.trace.web.dao.DaoException;
 import cn.huse.trace.web.entity.Project;
+import cn.huse.trace.web.entity.Transaction;
+import cn.huse.trace.web.entity.User;
+import cn.huse.trace.web.entity.view.ProjectView;
 import cn.huse.trace.web.service.ProjectService;
+import cn.huse.trace.web.service.TransactionService;
+import cn.huse.trace.web.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author: huanxi
@@ -23,12 +29,26 @@ public class ProjectController {
 
     @Resource
     private ProjectService projectService;
-
+    @Resource
+    private UserService userService;
+    @Resource
+    private TransactionService transactionService;
 
     @GetMapping("all")
     @ApiOperation("获取所有已经审核通过的项目")
     public ReturnMessageMap getAllProject(int page, int size) {
-        if (page > 0 && size > 0) return new ReturnMessageMap(projectService.all(page, size));
+        List<ProjectView> projectViews = new ArrayList<>();
+        if (page > 0 && size > 0) {
+            List<Project> projects = projectService.all(page, size);
+            projects.forEach(project -> {
+                List<Transaction> transactions = transactionService.getTransactionOutByUserId(project.getProjectId());
+                User user = userService.getUser(project.getUserId());
+                float balance = transactionService.getBalance(project.getProjectId());
+                if (user!=null)
+                projectViews.add(new ProjectView(project, transactions.size(), user.getName(), user.getHeaderUrl(), balance));
+            });
+            return new ReturnMessageMap(projectViews);
+        }
         return new ReturnMessageMap(4010, "page or size must be gt 0");
     }
 
@@ -51,12 +71,9 @@ public class ProjectController {
         Project t = projectService.getProject(project.getProjectId());
         if (t == null) new ReturnMessageMap(4032, "not exists this project");
         try {
-            if (!t.getUserId().equals(userId)) new ReturnMessageMap(4031, "user not have this project");
-            if (!StringUtils.isEmpty(project.getDesc())) t.setDesc(project.getDesc());
-            if (project.getTargetAmount() > 0) t.setTargetAmount(project.getTargetAmount());
-            if (!StringUtils.isEmpty(project.getTitle())) t.setTitle(project.getTitle());
-            if (!StringUtils.isEmpty(project.getImage())) t.setImage(project.getImage());
-            projectService.update(t);
+            project.setCreateTime(t.getCreateTime());
+            project.setStatus(t.getStatus());
+            projectService.update(project);
         } catch (DaoException e) {
             return new ReturnMessageMap(5014, e.getMessage());
         }
